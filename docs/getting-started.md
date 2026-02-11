@@ -76,5 +76,8 @@ const context = getAppContext();
 
 ## Next Steps
 - Learn about the [Architecture](./architecture.md)
-- Explore the [Hooks and Utilities](./hooks-and-utils.md)
+- Reference the [Configuration options](./configuration-reference.md)
+- Understand [Router & Navigation](./router-and-navigation.md)
+- Explore [Hooks and Utilities](./hooks-and-utils.md)
 - Configure [Theming & RTL](./theming-and-rtl.md)
+- Development with [Mocking & Testing](./mocking-and-testing.md)

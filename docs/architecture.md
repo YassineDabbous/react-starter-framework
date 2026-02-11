@@ -47,6 +47,15 @@ This pattern ensures that `packages/framework` has **Zero Dependencies** on `src
 -   **Apps**: UI components, specific business logic, and API endpoints.
 -   **Shared**: Constants and layouts that items might share across apps but are not "framework" tools (e.g., a common footer).
 
+## 5. App Loading Lifecycle
+When a user visits the URL, the following sequence occurs:
+
+1.  **Boot**: `main.tsx` executes and calls `initFramework` with the `appRegistry`.
+2.  **Detect**: `getAppContext()` parses `window.location` and finds the matching app profile.
+3.  **Load**: `Promise.all` executes the app's `loadApp()` and `loadLang()` dynamic imports.
+4.  **Inject**: The app's specific `theme` is merged into the framework settings via a second `initFramework` call.
+5.  **Render**: The framework's `<Router />` is mounted, setting up the file-system routes and the global layout.
+
 ---
 
 ## Next Steps

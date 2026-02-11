@@ -21,9 +21,12 @@ Dive deep into how the framework works and how to use it effectively:
 
 - [**Getting Started**](./docs/getting-started.md) - Installation and setup.
 - [**Architecture**](./docs/architecture.md) - Understanding the core patterns.
+- [**Configuration Reference**](./docs/configuration-reference.md) - All init options.
+- [**Router & Navigation**](./docs/router-and-navigation.md) - File-system routing depth.
 - [**Hooks & Utilities**](./docs/hooks-and-utils.md) - Reactive tools reference.
 - [**Theming & RTL**](./docs/theming-and-rtl.md) - Styling and localization.
 - [**API Client**](./docs/api-client.md) - Data fetching and error handling.
+- [**Mocking & Testing**](./docs/mocking-and-testing.md) - Rapid development tools.
 
 ---
 
