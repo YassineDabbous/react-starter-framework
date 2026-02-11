@@ -3,7 +3,7 @@ import type { AppConfig } from "./types/app";
 
 export function getAppContext(): AppConfig {
     const { hostname, pathname } = window.location;
-    const { appRegistry } = getFrameworkSettings();
+    const { appRegistry, defaultAppId } = getFrameworkSettings();
 
     // Find the first app that matches the current environment
     const currentApp = appRegistry.find(app => {
@@ -12,8 +12,10 @@ export function getAppContext(): AppConfig {
         return false;
     });
 
-    // Return the matched app or the default (usually the last one or 'student')
-    return currentApp || appRegistry.find(app => app.id === 'student') || appRegistry[appRegistry.length - 1];
+    // Return the matched app or the default from settings, falling back to the last entry
+    return currentApp ||
+        appRegistry.find(app => app.id === defaultAppId) ||
+        appRegistry[appRegistry.length - 1];
 }
 
 export function getAppBasePath(context: AppConfig): string {

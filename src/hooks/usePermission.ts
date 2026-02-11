@@ -5,12 +5,15 @@ import { BasicStatus } from "@/framework/types/enum";
 
 export type PermissionCheck = string | string[];
 
+import { getFrameworkSettings } from "@/framework/config";
+
 /**
  * A framework-level hook for fine-grained permission checks.
  */
 export function usePermission() {
     const permissions = useUserPermission();
     const userInfo = useUserInfo();
+    const { superAdminRole } = getFrameworkSettings();
 
     const flattenedPermissions = useMemo(() => {
         if (!permissions) return [];
@@ -19,9 +22,9 @@ export function usePermission() {
     }, [permissions]);
 
     const isSuperAdmin = useMemo(() => {
-        return userInfo.role?.id === "superadmin" ||
+        return userInfo.role?.id === superAdminRole ||
             flattenedPermissions.some(p => p.name === "*" || p.id === "*");
-    }, [userInfo.role, flattenedPermissions]);
+    }, [userInfo.role, flattenedPermissions, superAdminRole]);
 
     /**
      * Check if the user has a specific permission.

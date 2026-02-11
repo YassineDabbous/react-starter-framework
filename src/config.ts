@@ -6,6 +6,8 @@ export interface FrameworkSettings {
     homepage: string;
     defaultLocale: string;
     appRegistry: AppRegistry;
+    defaultAppId?: string;
+    superAdminRole?: string;
     theme?: AppThemeConfig;
 }
 
@@ -15,6 +17,7 @@ let settings: FrameworkSettings = {
     homepage: "/",
     defaultLocale: "en_US",
     appRegistry: [],
+    superAdminRole: "superadmin",
 };
 
 export function initFramework(newSettings: Partial<FrameworkSettings>) {
