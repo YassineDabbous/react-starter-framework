@@ -1,54 +1,48 @@
-# Framework Layer
+# @yassinedabbous/react-framework
 
-This directory contains the core framework logic, designed to be application-agnostic and reusable.
+A configuration-driven, UI-agnostic React framework foundation designed for high-scale multi-app platforms.
 
-## Architecture
+---
 
-The framework follows a **Configuration-Driven Architecture**. The application injections its specific components, layouts, and data into the framework during initialization.
+## 🚀 Key Features
 
-### Core Components
+- **Multi-App Context**: Power multiple apps (Student, Admin, Trainer) from a single core.
+- **Smart Permission Guard**: Granular access control with wildcard and super-admin support.
+- **Persistence Hub**: Namespaced local/session storage with TTL and reactivity.
+- **Native RTL & i18n**: Automatic direction switching, logical properties, and namespaced translations.
+- **Type-Safe Event Bus**: Decoupled, event-driven communication between apps and components.
+- **Premium Theming**: Token-based system using Vanilla Extract for zero-runtime overhead.
 
-- **Router**: The main entry point for routing. It accepts a `FrameworkConfig` object.
-- **Store**: Pure state containers (Zustand) for user data and settings.
-- **Locales**: Injectable i18n support.
-- **Theme**: A centralized theme system based on design tokens.
+---
 
-## Usage
+## 📚 Documentation
 
-### 1. Initialization
+Dive deep into how the framework works and how to use it effectively:
 
-In your application's entry point (`main.tsx`), initialize the framework settings and i18n resources:
+- [**Getting Started**](./docs/getting-started.md) - Installation and setup.
+- [**Architecture**](./docs/architecture.md) - Understanding the core patterns.
+- [**Hooks & Utilities**](./docs/hooks-and-utils.md) - Reactive tools reference.
+- [**Theming & RTL**](./docs/theming-and-rtl.md) - Styling and localization.
+- [**API Client**](./docs/api-client.md) - Data fetching and error handling.
 
-```typescript
-import { initFramework } from "@/framework/config";
-import { initI18n } from "@/framework/locales/i18n";
-import resources from "@/app/lang";
+---
 
-initFramework({
-  storageName: import.meta.env.VITE_APP_STORAGE_NAME,
-  baseApi: import.meta.env.VITE_APP_BASE_API,
-  homepage: import.meta.env.VITE_APP_HOMEPAGE,
-  defaultLocale: import.meta.env.VITE_APP_LOCALE,
-});
+## 🛠 Usage as a Submodule
 
-initI18n(resources);
+This framework is designed to be used as a **Git Submodule** in your React Starter Kit.
+
+```bash
+git submodule add https://github.com/YassineDabbous/react-starter-framework.git packages/framework
 ```
 
-### 2. Configuration
+---
 
-Pass a `FrameworkConfig` to the `Router` component:
+## 📦 Repository Information
 
-```typescript
-const frameworkConfig = {
-  layouts: { dashboard: <MyLayout /> },
-  pages: import.meta.glob("./pages/**/*.tsx"),
-  defaultPermissions: [],
-  components: { circleLoading: <MyLoader /> }
-};
+- **Main Starter Kit**: [react-starter](https://github.com/YassineDabbous/react-starter)
+- **Framework Core**: [react-starter-framework](https://github.com/YassineDabbous/react-starter-framework/)
 
-<Router config={frameworkConfig} />
-```
+---
 
-## API Client
-
-The `BaseApiClient` provides a standardized way to make HTTP requests with built-in error handling and token management.
+## License
+MIT © [Yassine Dabbous](https://github.com/YassineDabbous)
