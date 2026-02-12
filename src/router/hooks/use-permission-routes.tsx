@@ -24,7 +24,15 @@ const loadComponentFromPath = (path: string, pages: Record<string, () => Promise
 	// and we map the permission.component to that.
 
 	// We try to match with several possible prefixes or the exact path.
-	return pages[normalizedPath] || pages[`/${normalizedPath}`] || pages[`./${normalizedPath}`];
+	// return pages[normalizedPath] || pages[`/${normalizedPath}`] || pages[`./${normalizedPath}`];
+	return (
+		pages[normalizedPath] ||
+		pages[`/${normalizedPath}`] ||
+		pages[`./${normalizedPath}`] ||
+		pages[`pages/${normalizedPath}`] ||
+		pages[`./pages/${normalizedPath}`] ||
+		pages[`/pages/${normalizedPath}`]
+	);
 };
 
 import { useFrameworkConfig } from "@/framework/router/context";
