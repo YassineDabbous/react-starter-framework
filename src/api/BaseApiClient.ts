@@ -1,8 +1,8 @@
 import axios, { type AxiosRequestConfig, type AxiosError, type AxiosResponse } from "axios";
 
-import { t } from "@/framework/locales/i18n";
+import { t } from "../locales/i18n";
 
-import type { Result } from "@/framework/types/api";
+import type { Result } from "../types/api";
 import { toast } from "sonner";
 
 export class ApiException extends Error {
@@ -54,7 +54,7 @@ export interface PaginationResponse<T> {
 	total: number;
 }
 
-import { getFrameworkSettings } from "@/framework/config";
+import { getFrameworkSettings } from "../config";
 
 export type TokenProvider = () => string | null | undefined;
 export type OnAuthError = (message: string) => void;

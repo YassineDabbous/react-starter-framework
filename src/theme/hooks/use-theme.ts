@@ -1,10 +1,10 @@
-import { ThemeMode } from "@/framework/types/enum";
+import { ThemeMode } from "../../types/enum";
 import { themeVars } from "../theme.css";
 import { baseThemeTokens } from "../tokens/base";
 import { darkColorTokens, lightColorTokens, presetsColors } from "../tokens/color";
 import { darkShadowTokens, lightShadowTokens } from "../tokens/shadow";
 import { typographyTokens } from "../tokens/typography";
-import type { BaseSettings } from "@/framework/types/settings";
+import type { BaseSettings } from "../../types/settings";
 import { useFrameworkContext } from "../../context/FrameworkContext";
 
 export function useTheme(settings?: BaseSettings, setSettings?: (settings: any) => void) {

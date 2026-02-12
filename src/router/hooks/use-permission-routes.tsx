@@ -2,11 +2,11 @@ import { isEmpty } from "ramda";
 import { Suspense, lazy, useMemo } from "react";
 import { Navigate, Outlet } from "react-router";
 
-import { flattenTrees } from "@/framework/utils/tree";
+import { flattenTrees } from "../../utils/tree";
 
-import type { Permission } from "@/framework/types/entity";
-import { BasicStatus, PermissionType } from "@/framework/types/enum";
-import type { AppRouteObject, FrameworkConfig } from "@/framework/types/router";
+import type { Permission } from "../../types/entity";
+import { BasicStatus, PermissionType } from "../../types/enum";
+import type { AppRouteObject, FrameworkConfig } from "../../types/router";
 
 // Module-level cache for lazy components to ensure stability across hook re-runs
 const LAZY_CACHE = new Map<string, React.LazyExoticComponent<any>>();
@@ -34,7 +34,7 @@ const loadComponentFromPath = (path: string, pages: Record<string, () => Promise
 	);
 };
 
-import { useFrameworkConfig } from "@/framework/router/context";
+import { useFrameworkConfig } from "../context";
 
 export function usePermissionRoutes(
 	pagesArg?: Record<string, () => Promise<any>>,

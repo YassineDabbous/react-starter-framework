@@ -1,15 +1,15 @@
-import ProtectedRoute from "@/framework/router/components/protected-route";
-import { getAuthRoute, getErrorRoute, getNoMatchedRoute } from "@/framework/router/general-routes";
-import { usePermissionRoutes } from "@/framework/router/hooks";
-import type { AppRouteObject, FrameworkConfig } from "@/framework/types/router";
+import ProtectedRoute from "./components/protected-route";
+import { getAuthRoute, getErrorRoute, getNoMatchedRoute } from "./general-routes";
+import { usePermissionRoutes } from "./hooks";
+import type { AppRouteObject, FrameworkConfig } from "../types/router";
 import { useMemo } from "react";
 import { Navigate, type RouteObject, createHashRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 
-import { getFrameworkSettings } from "@/framework/config";
-import { FrameworkConfigContext } from "@/framework/router/context";
+import { getFrameworkSettings } from "../config";
+import { FrameworkConfigContext } from "./context";
 
-import { useFrameworkContext } from "@/framework/context/FrameworkContext";
+import { useFrameworkContext } from "../context/FrameworkContext";
 
 export default function Router({
 	config,

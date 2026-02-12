@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-import { StorageEnum } from "@/framework/types/enum";
+import { StorageEnum } from "../types/enum";
 import type { BaseUserInfo, UserToken } from "../types/entity";
-import { createZustandStorage } from "@/framework/utils/storage";
+import { createZustandStorage } from "../utils/storage";
 
 export type UserStoreState<T extends BaseUserInfo> = {
 	userInfo: T | null;

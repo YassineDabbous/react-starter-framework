@@ -1,5 +1,5 @@
-import { ThemeColorPresets } from "@/framework/types/enum";
-import { rgbAlpha } from "@/framework/utils/theme";
+import { ThemeColorPresets } from "../../types/enum";
+import { rgbAlpha } from "../../utils/theme";
 
 export const presetsColors: Record<ThemeColorPresets, {
 	lighter: string;

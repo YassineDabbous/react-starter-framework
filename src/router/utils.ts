@@ -1,6 +1,6 @@
 import { ascend } from "ramda";
 
-import type { AppRouteObject, RouteMeta } from "@/framework/types/router";
+import type { AppRouteObject, RouteMeta } from "../types/router";
 
 /**
  * return menu routes

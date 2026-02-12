@@ -1,4 +1,4 @@
-import { hexToRgbChannel } from "@/framework/utils/theme";
+import { hexToRgbChannel } from "../utils/theme";
 import { createGlobalTheme, createThemeContract } from "@vanilla-extract/css";
 import { baseThemeTokens } from "./tokens/base";
 import { darkColorTokens, lightColorTokens } from "./tokens/color";

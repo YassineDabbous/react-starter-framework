@@ -1,4 +1,4 @@
-import type { FrameworkConfig } from "@/framework/types/router";
+import type { FrameworkConfig } from "../types/router";
 import { createContext, useContext } from "react";
 
 export const FrameworkConfigContext = createContext<FrameworkConfig | null>(null);

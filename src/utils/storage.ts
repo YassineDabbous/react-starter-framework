@@ -1,5 +1,5 @@
-import { getAppContext } from "@/framework/context";
-import type { StorageEnum } from "@/framework/types/enum";
+import { getAppContext } from "../context";
+import type { StorageEnum } from "../types/enum";
 
 interface StorageValue<T> {
 	value: T;

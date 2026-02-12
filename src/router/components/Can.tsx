@@ -1,5 +1,5 @@
-import { type PermissionCheck, usePermission } from "@/framework/hooks/usePermission";
-import type { BaseUserInfo } from "@/framework/types/entity";
+import { type PermissionCheck, usePermission } from "../../hooks/usePermission";
+import type { BaseUserInfo } from "../../types/entity";
 import type React from "react";
 
 interface CanProps {

@@ -5,9 +5,9 @@ import { type Params, useMatches, useOutlet } from "react-router";
 import { useFlattenedRoutes } from "./use-flattened-routes";
 import { useRouter } from "./use-router";
 
-import type { RouteMeta } from "@/framework/types/router";
+import type { RouteMeta } from "../../types/router";
 
-import { getFrameworkSettings } from "@/framework/config";
+import { getFrameworkSettings } from "../../config";
 
 const { homepage: HOMEPAGE } = getFrameworkSettings();
 /**

@@ -1,5 +1,5 @@
-import { breakpointsTokens } from "@/framework/theme/tokens/breakpoints";
-import { removePx } from "@/framework/utils/theme";
+import { breakpointsTokens } from "../../theme/tokens/breakpoints";
+import { removePx } from "../../utils/theme";
 import { useEffect, useMemo, useState } from "react";
 
 type MediaQueryConfig = {

@@ -1,6 +1,6 @@
-import { getFrameworkSettings } from "@/framework/config";
-import { ThemeMode } from "@/framework/types/enum";
-import { hexToRgbChannel, rgbAlpha } from "@/framework/utils/theme";
+import { getFrameworkSettings } from "../config";
+import { ThemeMode } from "../types/enum";
+import { hexToRgbChannel, rgbAlpha } from "../utils/theme";
 import { useEffect, useMemo, useState } from "react";
 import { layoutClass } from "./layout.css";
 import { presetsColors } from "./tokens/color";

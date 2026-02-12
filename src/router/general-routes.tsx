@@ -1,4 +1,4 @@
-import type { AppRouteObject, FrameworkConfig } from "@/framework/types/router";
+import type { AppRouteObject, FrameworkConfig } from "../types/router";
 import { Navigate } from "react-router";
 
 // Factory functions to create general routes using configuration

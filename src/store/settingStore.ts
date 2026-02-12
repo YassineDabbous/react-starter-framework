@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-import { StorageEnum } from "@/framework/types/enum";
+import { StorageEnum } from "../types/enum";
 import type { BaseSettings } from "../types/settings";
-import { createZustandStorage } from "@/framework/utils/storage";
+import { createZustandStorage } from "../utils/storage";
 
 export type SettingStoreState<T extends BaseSettings> = {
 	settings: T;

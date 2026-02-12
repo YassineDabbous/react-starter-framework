@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { getFrameworkSettings } from "@/framework/config";
+import { getFrameworkSettings } from "../config";
 
 export interface Language {
 	locale: string;

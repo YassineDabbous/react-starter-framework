@@ -1,8 +1,8 @@
 import type { BaseUserInfo } from "../types/entity";
-import { BasicStatus } from "@/framework/types/enum";
-import { flattenTrees } from "@/framework/utils/tree";
+import { BasicStatus } from "../types/enum";
+import { flattenTrees } from "../utils/tree";
 import { useMemo } from "react";
-import { getFrameworkSettings } from "@/framework/config";
+import { getFrameworkSettings } from "../config";
 import { useFrameworkContext } from "../context/FrameworkContext";
 
 export type PermissionCheck = string | string[];

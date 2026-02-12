@@ -2,10 +2,10 @@ import i18n from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 
-import { StorageEnum } from "@/framework/types/enum";
-import { getStringItem } from "@/framework/utils/storage";
+import { StorageEnum } from "../types/enum";
+import { getStringItem } from "../utils/storage";
 
-import { getFrameworkSettings } from "@/framework/config";
+import { getFrameworkSettings } from "../config";
 
 export function initI18n(resources: any) {
 	const settings = getFrameworkSettings();
