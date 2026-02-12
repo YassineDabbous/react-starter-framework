@@ -14,7 +14,8 @@ export interface BaseUserInfo {
 	email: string;
 	username: string;
 	avatar?: string;
-	permissions?: string[];
+	role?: Pick<Role, 'id' | 'name'>;
+	permissions?: Permission[];
 	status?: BasicStatus;
 }
 

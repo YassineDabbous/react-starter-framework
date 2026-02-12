@@ -25,7 +25,8 @@ export function usePermission(userInfo?: BaseUserInfo | null, permissions?: any[
 
 	const isSuperAdmin = useMemo(() => {
 		if (!finalUserInfo) return false;
-		return (finalUserInfo as any).role?.id === superAdminRole || flattenedPermissions.some((p) => p.name === "*" || p.id === "*");
+		const userRole = finalUserInfo.role;
+		return userRole?.id === superAdminRole || flattenedPermissions.some((p) => p.name === "*" || p.id === "*");
 	}, [finalUserInfo, flattenedPermissions, superAdminRole]);
 
 	const can = (permission: PermissionCheck, mode: "AND" | "OR" = "OR"): boolean => {
@@ -50,7 +51,8 @@ export function usePermission(userInfo?: BaseUserInfo | null, permissions?: any[
 
 	const is = (roleName: string): boolean => {
 		if (!finalUserInfo) return false;
-		return isSuperAdmin || (finalUserInfo as any).role?.id === roleName || (finalUserInfo as any).role?.name === roleName;
+		const userRole = finalUserInfo.role;
+		return isSuperAdmin || userRole?.id === roleName || userRole?.name === roleName;
 	};
 
 	return {
