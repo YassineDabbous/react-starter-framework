@@ -8,10 +8,20 @@ import {
 } from "@/framework/store/settingStore";
 import { ThemeMode } from "@/framework/types/enum";
 import { hexToRgbChannel, rgbAlpha } from "@/framework/utils/theme";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { layoutClass } from "./layout.css";
 import { presetsColors } from "./tokens/color";
 import type { UILibraryAdapter } from "./type";
+
+const useHasHydrated = () => {
+	const [hasHydrated, setHasHydrated] = useState(false);
+
+	useEffect(() => {
+		setHasHydrated(true);
+	}, []);
+
+	return hasHydrated;
+};
 
 interface ThemeProviderProps {
 	children: React.ReactNode;
@@ -19,6 +29,7 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children, adapters = [] }: ThemeProviderProps) {
+	const hasHydrated = useHasHydrated();
 	const themeMode = useThemeMode();
 	const themeColorPresets = useThemeColorPresets();
 	const fontSize = useFontSize();
@@ -86,6 +97,10 @@ export function ThemeProvider({ children, adapters = [] }: ThemeProviderProps) {
 			children,
 		);
 	}, [adapters, children, themeMode]);
+
+	if (!hasHydrated) {
+		return <div className={layoutClass} style={{ visibility: "hidden" }}>{children}</div>;
+	}
 
 	return <div className={layoutClass}>{wrappedWithAdapters}</div>;
 }

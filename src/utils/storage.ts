@@ -72,3 +72,26 @@ export const getSessionItem = <T>(key: StorageEnum | string): T | null => {
 	const result = sessionStorage.getItem(namespacedKey);
 	return result ? JSON.parse(result) : null;
 };
+/**
+ * Interface for Zustand Persist Storage
+ */
+export interface StateStorage {
+	getItem: (name: string) => string | null | Promise<string | null>;
+	setItem: (name: string, value: string) => void | Promise<void>;
+	removeItem: (name: string) => void | Promise<void>;
+}
+
+/**
+ * Creates a namespaced storage adapter for Zustand persistence.
+ */
+export const createZustandStorage = (): StateStorage => ({
+	getItem: (name) => getStringItem(name),
+	setItem: (name, value) => {
+		const namespacedKey = getNamespacedKey(name);
+		localStorage.setItem(namespacedKey, value);
+	},
+	removeItem: (name) => {
+		const namespacedKey = getNamespacedKey(name);
+		localStorage.removeItem(namespacedKey);
+	},
+});

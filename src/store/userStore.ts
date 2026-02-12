@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-import { getFrameworkSettings } from "@/framework/config";
 import type { UserInfo, UserToken } from "@/framework/types/entity";
 import { StorageEnum } from "@/framework/types/enum";
 
@@ -14,6 +13,8 @@ type UserStore = {
 		clearUserInfoAndToken: () => void;
 	};
 };
+
+import { createZustandStorage } from "@/framework/utils/storage";
 
 const useUserStore = create<UserStore>()(
 	persist(
@@ -33,8 +34,8 @@ const useUserStore = create<UserStore>()(
 			},
 		}),
 		{
-			name: `${getFrameworkSettings().storageName}-user`,
-			storage: createJSONStorage(() => localStorage),
+			name: "user",
+			storage: createJSONStorage(() => createZustandStorage()),
 			partialize: (state) => ({
 				[StorageEnum.UserInfo]: state.userInfo,
 				[StorageEnum.UserToken]: state.userToken,
