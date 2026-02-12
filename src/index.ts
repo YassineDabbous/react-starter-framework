@@ -20,7 +20,7 @@ export * from "./router/hooks";
 export * from "./router/components/Can";
 
 // API
-export { default as BaseApiClient } from "./api/BaseApiClient";
+export { default as BaseApiClient, createApiClient, type ApiClientConfig } from "./api/BaseApiClient";
 
 // Utils
 export * from "./utils/storage";
