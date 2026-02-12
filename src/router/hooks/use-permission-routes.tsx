@@ -3,6 +3,7 @@ import { Suspense, lazy, useMemo } from "react";
 import { Navigate, Outlet } from "react-router";
 
 import { RouteErrorBoundary } from "../components/RouteErrorBoundary";
+import { resolveComponentPath } from "../utils";
 
 import { flattenTrees } from "../../utils/tree";
 
@@ -12,29 +13,6 @@ import type { AppRouteObject, FrameworkConfig } from "../../types/router";
 
 // Module-level cache for lazy components to ensure stability across hook re-runs
 const LAZY_CACHE = new Map<string, React.LazyExoticComponent<any>>();
-
-/**
- * Normalizes component path and matches it against the PAGES glob keys.
- */
-const loadComponentFromPath = (path: string, pages: Record<string, () => Promise<any>>) => {
-	// Normalize the incoming path (remove leading slash if present)
-	const normalizedPath = path.startsWith("/") ? path.substring(1) : path;
-
-	// In the new system, we expect the path in the permission to match the key in the pages object
-	// The app will provide the pages glob, e.g. import.meta.glob("./pages/**/*.tsx")
-	// and we map the permission.component to that.
-
-	// We try to match with several possible prefixes or the exact path.
-	// return pages[normalizedPath] || pages[`/${normalizedPath}`] || pages[`./${normalizedPath}`];
-	return (
-		pages[normalizedPath] ||
-		pages[`/${normalizedPath}`] ||
-		pages[`./${normalizedPath}`] ||
-		pages[`pages/${normalizedPath}`] ||
-		pages[`./pages/${normalizedPath}`] ||
-		pages[`/pages/${normalizedPath}`]
-	);
-};
 
 import { useFrameworkConfig } from "../context";
 
@@ -183,7 +161,8 @@ const createMenuRoute = (
 		let Element = LAZY_CACHE.get(path);
 
 		if (!Element) {
-			const loadFn = loadComponentFromPath(path, pages);
+			const resolvedPath = resolveComponentPath(path, pages);
+			const loadFn = resolvedPath ? pages[resolvedPath] : undefined;
 			if (loadFn) {
 				Element = lazy(loadFn as any);
 				LAZY_CACHE.set(path, Element!);
