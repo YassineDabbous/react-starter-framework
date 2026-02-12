@@ -1,7 +1,13 @@
 import { ThemeColorPresets } from "@/framework/types/enum";
 import { rgbAlpha } from "@/framework/utils/theme";
 
-export const presetsColors = {
+export const presetsColors: Record<ThemeColorPresets, {
+	lighter: string;
+	light: string;
+	default: string;
+	dark: string;
+	darker: string;
+}> = {
 	[ThemeColorPresets.Default]: {
 		lighter: "#C8FAD6",
 		light: "#5BE49B",

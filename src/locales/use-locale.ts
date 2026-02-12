@@ -1,7 +1,6 @@
-import { getFrameworkSettings } from "@/framework/config";
-import { useSettingActions } from "@/framework/store/settingStore";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { getFrameworkSettings } from "@/framework/config";
 
 export interface Language {
 	locale: string;
@@ -16,20 +15,16 @@ export interface Language {
 export default function useLocale() {
 	const { i18n } = useTranslation();
 	const { defaultLocale } = getFrameworkSettings();
-	const { setDirection } = useSettingActions();
-
 	const locale = i18n.resolvedLanguage || defaultLocale;
 
-	// Automatically sync the HTML dir attribute and settings
+	// Automatically sync the HTML dir and lang attributes
 	useEffect(() => {
 		const rtlLocales = ["ar", "he", "fa", "ur"];
 		const direction = rtlLocales.some((rtl) => locale.startsWith(rtl)) ? "rtl" : "ltr";
 
 		document.documentElement.dir = direction;
 		document.documentElement.lang = locale;
-
-		setDirection(direction);
-	}, [locale, setDirection]);
+	}, [locale]);
 
 	const setLocale = (newLocale: string) => {
 		i18n.changeLanguage(newLocale);

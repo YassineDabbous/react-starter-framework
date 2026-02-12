@@ -5,15 +5,17 @@ export interface UserToken {
 	refreshToken?: string;
 }
 
-export interface UserInfo {
-	id: string;
+/**
+ * The "Infrastructure" user.
+ * Framework logic depends on these fields for auth and basic profile display.
+ */
+export interface BaseUserInfo {
+	id: string | number;
 	email: string;
 	username: string;
-	password?: string;
 	avatar?: string;
-	role?: Role;
+	permissions?: string[];
 	status?: BasicStatus;
-	permissions?: Permission[];
 }
 
 export interface Role {

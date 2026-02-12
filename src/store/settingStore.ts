@@ -1,77 +1,45 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-import { FontFamilyPreset, typographyTokens } from "@/framework/theme/tokens/typography";
-import { StorageEnum, ThemeColorPresets, ThemeLayout, ThemeMode } from "@/framework/types/enum";
+import { StorageEnum } from "@/framework/types/enum";
+import type { BaseSettings } from "../types/settings";
+import { createZustandStorage } from "@/framework/utils/storage";
 
-export type SettingsType = {
-	themeColorPresets: ThemeColorPresets;
-	themeMode: ThemeMode;
-	themeLayout: ThemeLayout;
-	themeStretch: boolean;
-	breadCrumb: boolean;
-	multiTab: boolean;
-	darkSidebar: boolean;
-	fontFamily: string;
-	fontSize: number;
-	direction: "ltr" | "rtl";
-};
-type SettingStore = {
-	settings: SettingsType;
+export type SettingStoreState<T extends BaseSettings> = {
+	settings: T;
 	actions: {
-		setSettings: (settings: SettingsType) => void;
+		setSettings: (settings: T) => void;
 		setDirection: (direction: "ltr" | "rtl") => void;
 		clearSettings: () => void;
 	};
 };
 
-const INITIAL_SETTINGS: SettingsType = {
-	themeColorPresets: ThemeColorPresets.Default,
-	themeMode: ThemeMode.Light,
-	themeLayout: ThemeLayout.Vertical,
-	themeStretch: false,
-	breadCrumb: true,
-	multiTab: true,
-	darkSidebar: false,
-	fontFamily: FontFamilyPreset.rubik,
-	fontSize: Number(typographyTokens.fontSize.sm),
-	direction: "ltr",
-};
-
-import { createZustandStorage } from "@/framework/utils/storage";
-
-const useSettingStore = create<SettingStore>()(
-	persist(
-		(set) => ({
-			settings: INITIAL_SETTINGS,
-			actions: {
-				setSettings: (settings) => {
-					set({ settings });
+/**
+ * Factory to create an app-aware settings store.
+ */
+export const createSettingStore = <T extends BaseSettings>(initialSettings: T) => {
+	const useStore = create<SettingStoreState<T>>()(
+		persist(
+			(set) => ({
+				settings: initialSettings,
+				actions: {
+					setSettings: (settings) => {
+						set({ settings });
+					},
+					setDirection: (direction) => {
+						set((state) => ({ settings: { ...state.settings, direction } }));
+					},
+					clearSettings() {
+						useStore.persist.clearStorage();
+					},
 				},
-				setDirection: (direction) => {
-					set((state) => ({ settings: { ...state.settings, direction } }));
-				},
-				clearSettings() {
-					useSettingStore.persist.clearStorage();
-				},
+			}),
+			{
+				name: StorageEnum.Settings,
+				storage: createJSONStorage(() => createZustandStorage()),
+				partialize: (state) => ({ [StorageEnum.Settings]: state.settings }),
 			},
-		}),
-		{
-			name: StorageEnum.Settings,
-			storage: createJSONStorage(() => createZustandStorage()),
-			partialize: (state) => ({ [StorageEnum.Settings]: state.settings }),
-		},
-	),
-);
-
-export const useSettings = () => useSettingStore((state) => state.settings);
-export const useThemeMode = () => useSettingStore((state) => state.settings.themeMode);
-export const useThemeColorPresets = () => useSettingStore((state) => state.settings.themeColorPresets);
-export const useThemeLayout = () => useSettingStore((state) => state.settings.themeLayout);
-export const useDirection = () => useSettingStore((state) => state.settings.direction);
-export const useFontFamily = () => useSettingStore((state) => state.settings.fontFamily);
-export const useFontSize = () => useSettingStore((state) => state.settings.fontSize);
-
-export const useSettingActions = () => useSettingStore((state) => state.actions);
-
-export default useSettingStore;
+		),
+	);
+	return useStore;
+};

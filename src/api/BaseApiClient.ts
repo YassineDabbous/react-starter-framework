@@ -1,7 +1,6 @@
 import axios, { type AxiosRequestConfig, type AxiosError, type AxiosResponse } from "axios";
 
 import { t } from "@/framework/locales/i18n";
-import userStore from "@/framework/store/userStore";
 
 import type { Result } from "@/framework/types/api";
 import { toast } from "sonner";
@@ -57,6 +56,12 @@ export interface PaginationResponse<T> {
 
 import { getFrameworkSettings } from "@/framework/config";
 
+export type TokenProvider = () => string | null | undefined;
+export type OnAuthError = (message: string) => void;
+
+let _tokenProvider: TokenProvider = () => null;
+let _onAuthError: OnAuthError = () => { };
+
 const axiosInstance = axios.create({
 	baseURL: "", // Will be set or used from settings
 	timeout: 50000,
@@ -69,8 +74,10 @@ axiosInstance.interceptors.request.use(
 		const settings = getFrameworkSettings();
 		if (!config.baseURL) config.baseURL = settings.baseApi;
 
-		const { accessToken } = userStore.getState().userToken;
-		config.headers.Authorization = `Bearer ${accessToken}`;
+		const accessToken = _tokenProvider();
+		if (accessToken) {
+			config.headers.Authorization = `Bearer ${accessToken}`;
+		}
 		return config;
 	},
 	(error) => {
@@ -102,7 +109,7 @@ axiosInstance.interceptors.response.use(
 
 		const status = response?.status;
 		if (status === 401) {
-			userStore.getState().actions.clearUserInfoAndToken();
+			_onAuthError(errMsg);
 			return Promise.reject(new AuthException(errMsg));
 		}
 
@@ -115,6 +122,13 @@ axiosInstance.interceptors.response.use(
 );
 
 class APIClient {
+	setTokenProvider(provider: TokenProvider) {
+		_tokenProvider = provider;
+	}
+
+	setOnAuthError(handler: OnAuthError) {
+		_onAuthError = handler;
+	}
 	get<T = any>(config: AxiosRequestConfig): Promise<T> {
 		return this.request({ ...config, method: "GET" });
 	}

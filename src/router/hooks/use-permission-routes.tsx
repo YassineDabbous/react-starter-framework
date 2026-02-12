@@ -2,7 +2,6 @@ import { isEmpty } from "ramda";
 import { Suspense, lazy, useMemo } from "react";
 import { Navigate, Outlet } from "react-router";
 
-import { useUserPermission } from "@/framework/store/userStore";
 import { flattenTrees } from "@/framework/utils/tree";
 
 import type { Permission } from "@/framework/types/entity";
@@ -41,6 +40,7 @@ export function usePermissionRoutes(
 	pagesArg?: Record<string, () => Promise<any>>,
 	defaultPermissionsArg?: Permission[],
 	componentsArg?: FrameworkConfig["components"],
+	userPermissions?: Permission[],
 ): AppRouteObject[] {
 	const config = pagesArg ? null : useFrameworkConfig();
 
@@ -48,7 +48,7 @@ export function usePermissionRoutes(
 	const defaultPermissions = defaultPermissionsArg || config?.defaultPermissions!;
 	const components = componentsArg || config?.components;
 
-	const permissions = useUserPermission() || defaultPermissions;
+	const permissions = userPermissions || defaultPermissions;
 	return useMemo(() => {
 		if (!permissions) return [];
 

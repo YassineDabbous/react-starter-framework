@@ -1,4 +1,5 @@
 import { type PermissionCheck, usePermission } from "@/framework/hooks/usePermission";
+import type { BaseUserInfo } from "@/framework/types/entity";
 import type React from "react";
 
 interface CanProps {
@@ -10,6 +11,14 @@ interface CanProps {
 	 * Role required to show the children
 	 */
 	role?: string;
+	/**
+	 * User info for permission check
+	 */
+	userInfo?: BaseUserInfo | null;
+	/**
+	 * User permissions for permission check
+	 */
+	permissions?: any[] | null;
 	/**
 	 * Logical mode for multiple permissions
 	 */
@@ -24,8 +33,8 @@ interface CanProps {
 /**
  * A declarative component to guard UI elements based on framework permissions and roles.
  */
-export function Can({ perform, role, mode = "OR", fallback = null, children }: CanProps) {
-	const { can, is } = usePermission();
+export function Can({ perform, role, userInfo, permissions, mode = "OR", fallback = null, children }: CanProps) {
+	const { can, is } = usePermission(userInfo, permissions);
 
 	const hasPermission = perform ? can(perform, mode) : true;
 	const hasRole = role ? is(role) : true;

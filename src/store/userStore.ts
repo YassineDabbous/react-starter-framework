@@ -1,52 +1,43 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-import type { UserInfo, UserToken } from "@/framework/types/entity";
 import { StorageEnum } from "@/framework/types/enum";
+import type { BaseUserInfo, UserToken } from "../types/entity";
+import { createZustandStorage } from "@/framework/utils/storage";
 
-type UserStore = {
-	userInfo: Partial<UserInfo>;
-	userToken: UserToken;
+export type UserStoreState<T extends BaseUserInfo> = {
+	userInfo: T | null;
+	userToken: UserToken | null;
 	actions: {
-		setUserInfo: (userInfo: UserInfo) => void;
-		setUserToken: (token: UserToken) => void;
+		setUserInfo: (userInfo: T | null) => void;
+		setUserToken: (token: UserToken | null) => void;
 		clearUserInfoAndToken: () => void;
 	};
 };
 
-import { createZustandStorage } from "@/framework/utils/storage";
-
-const useUserStore = create<UserStore>()(
-	persist(
-		(set) => ({
-			userInfo: {},
-			userToken: {},
-			actions: {
-				setUserInfo: (userInfo) => {
-					set({ userInfo });
+/**
+ * Factory to create a user store for a specific app.
+ */
+export const createUserStore = <T extends BaseUserInfo>() => {
+	return create<UserStoreState<T>>()(
+		persist(
+			(set) => ({
+				userInfo: null,
+				userToken: null,
+				actions: {
+					setUserInfo: (userInfo) => set({ userInfo }),
+					setUserToken: (userToken) => set({ userToken }),
+					clearUserInfoAndToken: () => set({ userInfo: null, userToken: null }),
 				},
-				setUserToken: (userToken) => {
-					set({ userToken });
-				},
-				clearUserInfoAndToken() {
-					set({ userInfo: {}, userToken: {} });
-				},
-			},
-		}),
-		{
-			name: "user",
-			storage: createJSONStorage(() => createZustandStorage()),
-			partialize: (state) => ({
-				[StorageEnum.UserInfo]: state.userInfo,
-				[StorageEnum.UserToken]: state.userToken,
 			}),
-		},
-	),
-);
-
-export const useUserInfo = () => useUserStore((state) => state.userInfo);
-export const useUserToken = () => useUserStore((state) => state.userToken);
-export const useUserPermission = () => useUserStore((state) => state.userInfo.permissions);
-export const useUserActions = () => useUserStore((state) => state.actions);
-
-export default useUserStore;
+			{
+				name: StorageEnum.UserInfo, // The storage key will be namespaced by the storage engine
+				storage: createJSONStorage(() => createZustandStorage()),
+				partialize: (state) => ({
+					[StorageEnum.UserInfo]: state.userInfo,
+					[StorageEnum.UserToken]: state.userToken,
+				}),
+			},
+		),
+	);
+};

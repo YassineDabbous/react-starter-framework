@@ -1,33 +1,33 @@
-import { useUserInfo, useUserPermission } from "@/framework/store/userStore";
+import type { BaseUserInfo } from "../types/entity";
 import { BasicStatus } from "@/framework/types/enum";
 import { flattenTrees } from "@/framework/utils/tree";
 import { useMemo } from "react";
+import { getFrameworkSettings } from "@/framework/config";
+import { useFrameworkContext } from "../context/FrameworkContext";
 
 export type PermissionCheck = string | string[];
 
-import { getFrameworkSettings } from "@/framework/config";
-
 /**
  * A framework-level hook for fine-grained permission checks.
+ * Decoupled from the store; requires data to be passed in.
  */
-export function usePermission() {
-	const permissions = useUserPermission();
-	const userInfo = useUserInfo();
+export function usePermission(userInfo?: BaseUserInfo | null, permissions?: any[] | null | undefined) {
+	const ctx = useFrameworkContext();
 	const { superAdminRole } = getFrameworkSettings();
 
+	const finalUserInfo = userInfo !== undefined ? userInfo : ctx?.user;
+	const finalPermissions = permissions !== undefined ? permissions : ctx?.user?.permissions;
+
 	const flattenedPermissions = useMemo(() => {
-		if (!permissions) return [];
-		// Only consider enabled permissions
-		return flattenTrees(permissions).filter((p) => p.status !== BasicStatus.DISABLE);
-	}, [permissions]);
+		if (!finalPermissions) return [];
+		return flattenTrees(finalPermissions).filter((p) => p.status !== BasicStatus.DISABLE);
+	}, [finalPermissions]);
 
 	const isSuperAdmin = useMemo(() => {
-		return userInfo.role?.id === superAdminRole || flattenedPermissions.some((p) => p.name === "*" || p.id === "*");
-	}, [userInfo.role, flattenedPermissions, superAdminRole]);
+		if (!finalUserInfo) return false;
+		return (finalUserInfo as any).role?.id === superAdminRole || flattenedPermissions.some((p) => p.name === "*" || p.id === "*");
+	}, [finalUserInfo, flattenedPermissions, superAdminRole]);
 
-	/**
-	 * Check if the user has a specific permission.
-	 */
 	const can = (permission: PermissionCheck, mode: "AND" | "OR" = "OR"): boolean => {
 		if (isSuperAdmin) return true;
 		if (!permissions) return false;
@@ -36,15 +36,11 @@ export function usePermission() {
 
 		const results = checkList.map((p) => {
 			return flattenedPermissions.some((item) => {
-				// Exact match
 				if (item.name === p || item.id === p) return true;
-
-				// Wildcard match (e.g., item.name is 'user.*' and p is 'user.edit')
 				if (item.name?.endsWith(".*")) {
 					const prefix = item.name.slice(0, -2);
 					return p.startsWith(prefix);
 				}
-
 				return false;
 			});
 		});
@@ -52,11 +48,9 @@ export function usePermission() {
 		return mode === "AND" ? results.every((res) => res) : results.some((res) => res);
 	};
 
-	/**
-	 * Check if the user has a specific role.
-	 */
 	const is = (roleName: string): boolean => {
-		return isSuperAdmin || userInfo.role?.id === roleName || userInfo.role?.name === roleName;
+		if (!finalUserInfo) return false;
+		return isSuperAdmin || (finalUserInfo as any).role?.id === roleName || (finalUserInfo as any).role?.name === roleName;
 	};
 
 	return {

@@ -1,17 +1,11 @@
 import { getFrameworkSettings } from "@/framework/config";
-import {
-	useDirection,
-	useFontFamily,
-	useFontSize,
-	useThemeColorPresets,
-	useThemeMode,
-} from "@/framework/store/settingStore";
 import { ThemeMode } from "@/framework/types/enum";
 import { hexToRgbChannel, rgbAlpha } from "@/framework/utils/theme";
 import { useEffect, useMemo, useState } from "react";
 import { layoutClass } from "./layout.css";
 import { presetsColors } from "./tokens/color";
 import type { UILibraryAdapter } from "./type";
+import type { BaseSettings } from "../types/settings";
 
 const useHasHydrated = () => {
 	const [hasHydrated, setHasHydrated] = useState(false);
@@ -23,18 +17,25 @@ const useHasHydrated = () => {
 	return hasHydrated;
 };
 
+import { useTheme } from "./hooks/use-theme";
+
 interface ThemeProviderProps {
 	children: React.ReactNode;
 	adapters?: UILibraryAdapter[];
+	settings?: BaseSettings;
 }
 
-export function ThemeProvider({ children, adapters = [] }: ThemeProviderProps) {
+export function ThemeProvider({ children, adapters = [], settings }: ThemeProviderProps) {
 	const hasHydrated = useHasHydrated();
-	const themeMode = useThemeMode();
-	const themeColorPresets = useThemeColorPresets();
-	const fontSize = useFontSize();
-	const fontFamily = useFontFamily();
-	const direction = useDirection();
+	const { settings: finalSettings } = useTheme(settings);
+
+	const {
+		themeMode,
+		themeColorPresets,
+		fontSize,
+		fontFamily,
+		direction,
+	} = finalSettings;
 
 	const { theme } = getFrameworkSettings();
 
