@@ -1,4 +1,5 @@
 import { getAppContext } from "../context";
+import { getFrameworkSettings } from "../config";
 import type { StorageEnum } from "../types/enum";
 
 interface StorageValue<T> {
@@ -8,9 +9,33 @@ interface StorageValue<T> {
 
 /**
  * Automatically namespaces keys based on the current app context.
+ * 
+ * @throws {Error} If app context is invalid or missing
  */
 const getNamespacedKey = (key: string | StorageEnum): string => {
 	const context = getAppContext();
+
+	// Validation: Ensure context has a valid ID
+	if (!context || !context.id) {
+		const errorMsg = 'Storage Error: App context is missing or has no ID. This could lead to namespace collisions!';
+		console.error(errorMsg, { context, key });
+		throw new Error(errorMsg);
+	}
+
+	// Validation: Warn if using default/fallback context (development only)
+	if (import.meta.env.DEV) {
+		const { appRegistry, defaultAppId } = getFrameworkSettings();
+		const isDefaultApp = context.id === defaultAppId;
+		const isFallback = context === appRegistry[appRegistry.length - 1];
+
+		if (isDefaultApp || isFallback) {
+			console.warn(
+				'Storage Warning: Using default/fallback app context. Ensure app detection is configured correctly.',
+				{ contextId: context.id, key, isDefaultApp, isFallback }
+			);
+		}
+	}
+
 	return `${context.id}_${key}`;
 };
 
