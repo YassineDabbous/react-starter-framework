@@ -7,9 +7,6 @@ import { Navigate, type RouteObject, createHashRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 
 import { getFrameworkSettings } from "@/framework/config";
-
-const { homepage: HOMEPAGE } = getFrameworkSettings();
-
 import { FrameworkConfigContext } from "@/framework/router/context";
 
 export default function Router({ config }: { config: FrameworkConfig }) {
@@ -26,6 +23,7 @@ function PROTECTED_ROUTES_ELEMENT({
 	config,
 	permissionRoutes,
 }: { config: FrameworkConfig; permissionRoutes: AppRouteObject[] }) {
+	const { homepage: HOMEPAGE } = getFrameworkSettings();
 	const router = useMemo(() => {
 		const PROTECTED_ROUTE: AppRouteObject = {
 			path: "/",

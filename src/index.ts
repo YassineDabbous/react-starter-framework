@@ -7,6 +7,7 @@ export * from "./hooks/useDirection";
 export * from "./locales/use-locale";
 export * from "./hooks/usePermission";
 export * from "./hooks/useStorage";
+export * from "./theme";
 
 // Store
 export {

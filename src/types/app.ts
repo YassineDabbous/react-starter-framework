@@ -12,6 +12,8 @@ export interface AppConfig {
 	description?: string;
 	hostPrefix?: string;
 	pathPrefix?: string;
+	homepage: string;
+	defaultLocale?: string;
 	theme?: AppThemeConfig;
 	/**
 	 * Function to load the main App component

@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-import { getFrameworkSettings } from "@/framework/config";
 import { FontFamilyPreset, typographyTokens } from "@/framework/theme/tokens/typography";
 import { StorageEnum, ThemeColorPresets, ThemeLayout, ThemeMode } from "@/framework/types/enum";
 
@@ -39,6 +38,8 @@ const INITIAL_SETTINGS: SettingsType = {
 	direction: "ltr",
 };
 
+import { createZustandStorage } from "@/framework/utils/storage";
+
 const useSettingStore = create<SettingStore>()(
 	persist(
 		(set) => ({
@@ -56,8 +57,8 @@ const useSettingStore = create<SettingStore>()(
 			},
 		}),
 		{
-			name: `${getFrameworkSettings().storageName}-settings`,
-			storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
+			name: StorageEnum.Settings,
+			storage: createJSONStorage(() => createZustandStorage()),
 			partialize: (state) => ({ [StorageEnum.Settings]: state.settings }),
 		},
 	),
