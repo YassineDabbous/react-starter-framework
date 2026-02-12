@@ -2,6 +2,8 @@ import { isEmpty } from "ramda";
 import { Suspense, lazy, useMemo } from "react";
 import { Navigate, Outlet } from "react-router";
 
+import { RouteErrorBoundary } from "../components/RouteErrorBoundary";
+
 import { flattenTrees } from "../../utils/tree";
 
 import type { Permission } from "../../types/entity";
@@ -148,9 +150,11 @@ const createCatalogueRoute = (
 	const { parentId, children = [] } = permission;
 	if (!parentId) {
 		baseRoute.element = (
-			<Suspense fallback={components?.circleLoading}>
-				<Outlet />
-			</Suspense>
+			<RouteErrorBoundary>
+				<Suspense fallback={components?.circleLoading}>
+					<Outlet />
+				</Suspense>
+			</RouteErrorBoundary>
 		);
 	}
 
@@ -192,9 +196,11 @@ const createMenuRoute = (
 				baseRoute.element = <Component src={permission.frameSrc} />;
 			} else {
 				baseRoute.element = (
-					<Suspense fallback={components?.circleLoading}>
-						<Element />
-					</Suspense>
+					<RouteErrorBoundary>
+						<Suspense fallback={components?.circleLoading}>
+							<Element />
+						</Suspense>
+					</RouteErrorBoundary>
 				);
 			}
 		} else {
