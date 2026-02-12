@@ -1,5 +1,5 @@
 import { isEmpty } from "ramda";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { type Params, useMatches, useOutlet } from "react-router";
 
 import { useFlattenedRoutes } from "./use-flattened-routes";

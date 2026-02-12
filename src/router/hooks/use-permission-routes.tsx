@@ -180,7 +180,8 @@ const createMenuRoute = (
 
 		if (Element) {
 			if (permission.frameSrc) {
-				baseRoute.element = <Element src={permission.frameSrc} />;
+				const Component = Element as any;
+				baseRoute.element = <Component src={permission.frameSrc} />;
 			} else {
 				baseRoute.element = (
 					<Suspense fallback={components?.circleLoading}>
