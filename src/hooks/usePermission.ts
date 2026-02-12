@@ -30,7 +30,7 @@ export function usePermission(userInfo?: BaseUserInfo | null, permissions?: any[
 
 	const can = (permission: PermissionCheck, mode: "AND" | "OR" = "OR"): boolean => {
 		if (isSuperAdmin) return true;
-		if (!permissions) return false;
+		if (flattenedPermissions.length === 0) return false;
 
 		const checkList = Array.isArray(permission) ? permission : [permission];
 

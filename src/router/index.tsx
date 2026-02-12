@@ -9,16 +9,28 @@ import { RouterProvider } from "react-router/dom";
 import { getFrameworkSettings } from "@/framework/config";
 import { FrameworkConfigContext } from "@/framework/router/context";
 
+import { useFrameworkContext } from "@/framework/context/FrameworkContext";
+
 export default function Router({
 	config,
 	permissions,
 	token,
 }: { config: FrameworkConfig; permissions?: any[]; token?: string | null }) {
-	const permissionRoutes = usePermissionRoutes(config.pages, config.defaultPermissions, config.components, permissions);
+	const ctx = useFrameworkContext();
+
+	const finalPermissions = permissions !== undefined ? permissions : ctx?.user?.permissions;
+	const finalToken = token !== undefined ? token : ctx?.token;
+
+	const permissionRoutes = usePermissionRoutes(
+		config.pages,
+		config.defaultPermissions,
+		config.components,
+		finalPermissions,
+	);
 
 	return (
 		<FrameworkConfigContext.Provider value={config}>
-			<PROTECTED_ROUTES_ELEMENT config={config} permissionRoutes={permissionRoutes} token={token} />
+			<PROTECTED_ROUTES_ELEMENT config={config} permissionRoutes={permissionRoutes} token={finalToken} />
 		</FrameworkConfigContext.Provider>
 	);
 }
