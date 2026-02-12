@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { getFrameworkSettings } from "@/framework/config";
 import type { UserInfo, UserToken } from "@/framework/types/entity";
 import { StorageEnum } from "@/framework/types/enum";
-import { getFrameworkSettings } from "@/framework/config";
 
 type UserStore = {
 	userInfo: Partial<UserInfo>;

@@ -7,7 +7,11 @@ import type { Result } from "@/framework/types/api";
 import { toast } from "sonner";
 
 export class ApiException extends Error {
-	constructor(public message: string, public status?: number, public code?: string) {
+	constructor(
+		public message: string,
+		public status?: number,
+		public code?: string,
+	) {
 		super(message);
 		this.name = "ApiException";
 	}
@@ -31,24 +35,24 @@ export function _cleanParams(params: { [key: string]: any }) {
 	// console.log('dirty', params);
 	const o = Object.entries(params).reduce((a: { [key: string]: any }, [k, v]) => {
 		// return (v == null ? a : (a[k]=v, a));
-		if (v == null || v === '') {
+		if (v == null || v === "") {
 			return a;
 		}
 		a[k] = v;
 		return a;
 	}, {});
 	// console.log('clean', o);
-	return o
+	return o;
 }
 export function _route(url: string, params: { [key: string]: any }) {
-	return Object.keys(params).reduce((prev, key) => prev.replace(`:${key}`, params[key].toString()), url)
+	return Object.keys(params).reduce((prev, key) => prev.replace(`:${key}`, params[key].toString()), url);
 }
 
 export interface PaginationResponse<T> {
-	items: T[]
-	page: number
-	pageSize: number
-	total: number
+	items: T[];
+	page: number;
+	pageSize: number;
+	total: number;
 }
 
 import { getFrameworkSettings } from "@/framework/config";

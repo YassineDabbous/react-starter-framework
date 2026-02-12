@@ -1,7 +1,7 @@
-import { useTranslation } from "react-i18next";
 import { getFrameworkSettings } from "@/framework/config";
-import { useEffect } from "react";
 import { useSettingActions } from "@/framework/store/settingStore";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export interface Language {
 	locale: string;

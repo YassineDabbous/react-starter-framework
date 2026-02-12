@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { getFrameworkSettings } from "@/framework/config";
 import { FontFamilyPreset, typographyTokens } from "@/framework/theme/tokens/typography";
 import { StorageEnum, ThemeColorPresets, ThemeLayout, ThemeMode } from "@/framework/types/enum";
-import { getFrameworkSettings } from "@/framework/config";
 
 export type SettingsType = {
 	themeColorPresets: ThemeColorPresets;
@@ -64,6 +64,13 @@ const useSettingStore = create<SettingStore>()(
 );
 
 export const useSettings = () => useSettingStore((state) => state.settings);
+export const useThemeMode = () => useSettingStore((state) => state.settings.themeMode);
+export const useThemeColorPresets = () => useSettingStore((state) => state.settings.themeColorPresets);
+export const useThemeLayout = () => useSettingStore((state) => state.settings.themeLayout);
+export const useDirection = () => useSettingStore((state) => state.settings.direction);
+export const useFontFamily = () => useSettingStore((state) => state.settings.fontFamily);
+export const useFontSize = () => useSettingStore((state) => state.settings.fontSize);
+
 export const useSettingActions = () => useSettingStore((state) => state.actions);
 
 export default useSettingStore;

@@ -16,7 +16,6 @@ export const menuFilter = (items: AppRouteObject[]) => {
 		})
 		.sort(ascend((item) => item.order || Number.POSITIVE_INFINITY));
 };
- 
 
 /**
  * return the routes will be used in sidebar menu

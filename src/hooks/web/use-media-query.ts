@@ -75,34 +75,34 @@ const buildMediaQuery = (config: MediaQueryConfig | string): string => {
  * @see {@link MediaQueryConfig} for all supported configuration options
  */
 export const useMediaQuery = (config: MediaQueryConfig | string) => {
-    // Defaults to false during server-side rendering
+	// Defaults to false during server-side rendering
 	const [matches, setMatches] = useState(false);
 
-    // Converts config to a mediaQuery string
+	// Converts config to a mediaQuery string
 	const mediaQueryString = useMemo(() => buildMediaQuery(config), [config]);
 
 	useEffect(() => {
-        // Immediately checks the current state during client-side rendering
+		// Immediately checks the current state during client-side rendering
 		const mediaQuery = window.matchMedia(mediaQueryString);
 		setMatches(mediaQuery.matches);
 
-        // Listens for changes
+		// Listens for changes
 		const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
 
-        // Uses both new and old APIs to ensure maximum compatibility
+		// Uses both new and old APIs to ensure maximum compatibility
 		if (mediaQuery.addEventListener) {
 			mediaQuery.addEventListener("change", handler);
 		} else {
-            // Compatibility for older browsers
+			// Compatibility for older browsers
 			mediaQuery.addListener(handler);
 		}
 
-        // Cleanup function
+		// Cleanup function
 		return () => {
 			if (mediaQuery.removeEventListener) {
 				mediaQuery.removeEventListener("change", handler);
 			} else {
-                // Compatibility for older browsers
+				// Compatibility for older browsers
 				mediaQuery.removeListener(handler);
 			}
 		};

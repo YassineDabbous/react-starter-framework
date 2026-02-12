@@ -1,4 +1,4 @@
-import type { ReactNode, ComponentType } from "react";
+import type { ComponentType, ReactNode } from "react";
 import type { Params, RouteObject } from "react-router";
 
 export interface RouteMeta {

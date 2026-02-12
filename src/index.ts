@@ -9,7 +9,13 @@ export * from "./hooks/usePermission";
 export * from "./hooks/useStorage";
 
 // Store
-export { default as useUserStore, useUserInfo, useUserToken, useUserPermission, useUserActions } from "./store/userStore";
+export {
+	default as useUserStore,
+	useUserInfo,
+	useUserToken,
+	useUserPermission,
+	useUserActions,
+} from "./store/userStore";
 export { default as useSettingStore, useSettings, useSettingActions } from "./store/settingStore";
 
 // Router

@@ -1,11 +1,17 @@
-import { useSettings } from "@/framework/store/settingStore";
+import { getFrameworkSettings } from "@/framework/config";
+import {
+	useDirection,
+	useFontFamily,
+	useFontSize,
+	useThemeColorPresets,
+	useThemeMode,
+} from "@/framework/store/settingStore";
 import { ThemeMode } from "@/framework/types/enum";
 import { hexToRgbChannel, rgbAlpha } from "@/framework/utils/theme";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { layoutClass } from "./layout.css";
 import { presetsColors } from "./tokens/color";
 import type { UILibraryAdapter } from "./type";
-import { getFrameworkSettings } from "@/framework/config";
 
 interface ThemeProviderProps {
 	children: React.ReactNode;
@@ -13,7 +19,12 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children, adapters = [] }: ThemeProviderProps) {
-	const { themeMode, themeColorPresets, fontFamily, fontSize, direction } = useSettings();
+	const themeMode = useThemeMode();
+	const themeColorPresets = useThemeColorPresets();
+	const fontSize = useFontSize();
+	const fontFamily = useFontFamily();
+	const direction = useDirection();
+
 	const { theme } = getFrameworkSettings();
 
 	// Update app-specific font CSS variables
@@ -35,16 +46,18 @@ export function ThemeProvider({ children, adapters = [] }: ThemeProviderProps) {
 		root.dir = direction;
 	}, [themeMode, direction]);
 
+	// Memoize primary colors to avoid object lookup in effect if not needed
+	const primaryColors = useMemo(() => presetsColors[themeColorPresets], [themeColorPresets]);
+
 	// Dynamically update theme color related CSS variables
 	useEffect(() => {
 		const root = window.document.documentElement;
-		const primaryColors = presetsColors[themeColorPresets];
 		for (const [key, value] of Object.entries(primaryColors)) {
 			root.style.setProperty(`--colors-palette-primary-${key}`, value);
 			root.style.setProperty(`--colors-palette-primary-${key}Channel`, hexToRgbChannel(value));
 		}
 		root.style.setProperty("--shadows-primary", `box-shadow: 0 8px 16px 0 ${rgbAlpha(primaryColors.default, 0.24)}`);
-	}, [themeColorPresets]);
+	}, [primaryColors]);
 
 	// Update font size and font family
 	useEffect(() => {
@@ -56,21 +69,23 @@ export function ThemeProvider({ children, adapters = [] }: ThemeProviderProps) {
 	}, [fontFamily, fontSize]);
 
 	/**
-	 * Wrap children with adapters: 
+	 * Wrap children with adapters:
 	 * <adapter1>
 	 * 	<adapter2>
 	 * 		{children}
 	 * 	</adapter2>
 	 * </adapter1>
 	 */
-	const wrappedWithAdapters = adapters.reduce(
-		(children, Adapter) => (
-			<Adapter key={Adapter.name} mode={themeMode}>
-				{children}
-			</Adapter>
-		),
-		children,
-	);
+	const wrappedWithAdapters = useMemo(() => {
+		return adapters.reduce(
+			(children, Adapter) => (
+				<Adapter key={Adapter.name} mode={themeMode}>
+					{children}
+				</Adapter>
+			),
+			children,
+		);
+	}, [adapters, children, themeMode]);
 
 	return <div className={layoutClass}>{wrappedWithAdapters}</div>;
 }

@@ -9,8 +9,8 @@ import type { Permission } from "@/framework/types/entity";
 import { BasicStatus, PermissionType } from "@/framework/types/enum";
 import type { AppRouteObject, FrameworkConfig } from "@/framework/types/router";
 
-
-// Removed hardcoded PAGES glob to decouple framework from app
+// Module-level cache for lazy components to ensure stability across hook re-runs
+const LAZY_CACHE = new Map<string, React.LazyExoticComponent<any>>();
 
 /**
  * Normalizes component path and matches it against the PAGES glob keys.
@@ -32,7 +32,7 @@ import { useFrameworkConfig } from "@/framework/router/context";
 export function usePermissionRoutes(
 	pagesArg?: Record<string, () => Promise<any>>,
 	defaultPermissionsArg?: Permission[],
-	componentsArg?: FrameworkConfig["components"]
+	componentsArg?: FrameworkConfig["components"],
 ): AppRouteObject[] {
 	const config = pagesArg ? null : useFrameworkConfig();
 
@@ -53,7 +53,7 @@ function transformPermissionsToRoutes(
 	permissions: Permission[],
 	flattenedPermissions: Permission[],
 	pages: Record<string, () => Promise<any>>,
-	components?: FrameworkConfig["components"]
+	components?: FrameworkConfig["components"],
 ): AppRouteObject[] {
 	return permissions.map((permission) => {
 		if (permission.type === PermissionType.CATALOGUE) {
@@ -63,38 +63,38 @@ function transformPermissionsToRoutes(
 	});
 }
 
+// Map to cache calculated complete routes
+const ROUTE_PATH_CACHE = new Map<string, string>();
 
 /**
  * Build complete route path by traversing from current permission to root
  * @param {Permission} permission - current permission
  * @param {Permission[]} flattenedPermissions - flattened permission array
- * @param {string[]} segments - route segments accumulator
  * @returns {string} normalized complete route path
  */
-function buildCompleteRoute(
-	permission: Permission,
-	flattenedPermissions: Permission[],
-	segments: string[] = [],
-): string {
-	// Add current route segment
-	segments.unshift(permission.route);
-
-	// Base case: reached root permission
-	if (!permission.parentId) {
-		return `/${segments.join("/")}`;
+function buildCompleteRoute(permission: Permission, flattenedPermissions: Permission[]): string {
+	const cacheKey = `${permission.id}-${permission.route}`;
+	if (ROUTE_PATH_CACHE.has(cacheKey)) {
+		return ROUTE_PATH_CACHE.get(cacheKey)!;
 	}
 
-	// Find parent and continue recursion
-	const parent = flattenedPermissions.find((p) => p.id === permission.parentId);
-	if (!parent) {
-		console.warn(`Parent permission not found for ID: ${permission.parentId}`);
-		return `/${segments.join("/")}`;
+	const segments: string[] = [permission.route];
+	let current = permission;
+
+	while (current.parentId) {
+		const parent = flattenedPermissions.find((p) => p.id === current.parentId);
+		if (!parent) {
+			console.warn(`Parent permission not found for ID: ${current.parentId}`);
+			break;
+		}
+		segments.unshift(parent.route);
+		current = parent;
 	}
 
-	return buildCompleteRoute(parent, flattenedPermissions, segments);
+	const completeRoute = `/${segments.join("/")}`.replace(/\/+/g, "/");
+	ROUTE_PATH_CACHE.set(cacheKey, completeRoute);
+	return completeRoute;
 }
-
-
 
 // Route Transformers
 const createBaseRoute = (permission: Permission, completeRoute: string): AppRouteObject => {
@@ -129,7 +129,7 @@ const createCatalogueRoute = (
 	permission: Permission,
 	flattenedPermissions: Permission[],
 	pages: Record<string, () => Promise<any>>,
-	components?: FrameworkConfig["components"]
+	components?: FrameworkConfig["components"],
 ): AppRouteObject => {
 	const baseRoute = createBaseRoute(permission, buildCompleteRoute(permission, flattenedPermissions));
 
@@ -162,15 +162,23 @@ const createMenuRoute = (
 	permission: Permission,
 	flattenedPermissions: Permission[],
 	pages: Record<string, () => Promise<any>>,
-	components?: FrameworkConfig["components"]
+	components?: FrameworkConfig["components"],
 ): AppRouteObject => {
 	const baseRoute = createBaseRoute(permission, buildCompleteRoute(permission, flattenedPermissions));
 
 	if (permission.component) {
-		const loadFn = loadComponentFromPath(permission.component, pages);
-		if (loadFn) {
-			const Element = lazy(loadFn as any);
+		const path = permission.component;
+		let Element = LAZY_CACHE.get(path);
 
+		if (!Element) {
+			const loadFn = loadComponentFromPath(path, pages);
+			if (loadFn) {
+				Element = lazy(loadFn as any);
+				LAZY_CACHE.set(path, Element!);
+			}
+		}
+
+		if (Element) {
 			if (permission.frameSrc) {
 				baseRoute.element = <Element src={permission.frameSrc} />;
 			} else {
