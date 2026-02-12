@@ -64,6 +64,41 @@ initFramework({
 });
 ```
 
+## Integration
+
+To connect your application state with the framework, wrap your root component with `FrameworkProvider`:
+
+```tsx
+// src/apps/student/ui/App.tsx
+import { FrameworkProvider } from "@/framework";
+import { useUserInfo, useSettings } from "@/apps/student/store"; // Your app state
+
+export default function App() {
+  const user = useUserInfo();
+  const settings = useSettings();
+  const token = useUserAccessToken();
+
+  return (
+    <FrameworkProvider 
+      user={user} 
+      settings={settings} 
+      token={token}
+      actions={{
+        setSettings: (newSettings) => updateSettings(newSettings),
+        clearAuth: () => logout()
+      }}
+    >
+      <YourAppContent />
+    </FrameworkProvider>
+  );
+}
+```
+
+This automatically configures:
+1.  **API Client**: Injects the token into every request.
+2.  **Router guards**: Protects routes based on the provided user/token.
+3.  **Hooks**: Enables `usePermission`, `useTheme`, etc. to work without arguments.
+
 ### Context Detection
 The framework automatically detects which app is "active" based on the URL. You can get the current context anywhere using:
 

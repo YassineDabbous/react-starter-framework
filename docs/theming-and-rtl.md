@@ -5,6 +5,17 @@ The framework uses **Vanilla Extract** for high-performance styling and **CSS Lo
 ## 1. Design Tokens
 Tokens are located in `theme/tokens`. They are converted into CSS variables during build time.
 
+### Usage
+The `ThemeProvider` relies on `FrameworkProvider` for the active settings (theme mode, color preset, etc.).
+
+```tsx
+<FrameworkProvider settings={appSettings} ...>
+  <ThemeProvider adapters={[UIAdapter]}>
+    <App />
+  </ThemeProvider>
+</FrameworkProvider>
+```
+
 ### Typography
 Managed in `theme/tokens/typography.ts`. You can override fonts per application:
 

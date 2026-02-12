@@ -25,7 +25,7 @@ return <Router config={config} />;
 ## 2. Protected Routes
 The Router automatically wraps dashboard pages in a `ProtectedRoute` component.
 
-- **Check**: It verifies the presence of an `accessToken` in the `userStore`.
+- **Check**: It verifies the presence of an `accessToken` in the **FrameworkContext**.
 - **Redirect**: If unauthenticated, it redirects to the `auth.loginPath` (defaults to `/login`).
 
 ## 3. Permission-Gated Routes

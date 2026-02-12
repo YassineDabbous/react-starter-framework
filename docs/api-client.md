@@ -18,12 +18,25 @@ export const userClient = new UserClient();
 ```
 
 ## 2. Token Injection
-The client automatically retrieves the `accessToken` from the `userStore` and injects it into the `Authorization` header for every request:
+The client automatically retrieves the `accessToken` from the **FrameworkContext**.
+
+### Automatic Configuration
+When you wrap your app with `FrameworkProvider`, it automatically syncs the token:
+
+```tsx
+<FrameworkProvider token={myToken} ...>
+  <App />
+</FrameworkProvider>
+```
+
+The `BaseApiClient` listens to this context and injects the `Authorization` header for every request:
 
 ```typescript
-// Internal logic
+// Internal logic (handled automatically)
 config.headers.Authorization = `Bearer ${token}`;
 ```
+
+**Note**: You do not need to manually configure the token provider unless you are using the API client outside of the React tree.
 
 ## 3. Error Handling
 The client includes built-in interceptors to handle common scenarios:

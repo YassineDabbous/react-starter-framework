@@ -42,7 +42,32 @@ initFramework({
 
 This pattern ensures that `packages/framework` has **Zero Dependencies** on `src/apps`, which is why it can be used as a standalone Git Submodule.
 
-## 4. Logical Boundaries
+## 4. Framework Context Pattern
+To bridge the gap between your Application State (Zustand, Redux, Context) and the Framework's internal tools, we use the **Framework Context Pattern**.
+
+### The Problem
+The Framework needs to know about the current user, settings, and token to perform tasks like:
+- Checking permissions in `usePermission`.
+- Injecting tokens in `BaseApiClient`.
+- Handling RTL in `useDirection`.
+
+But the Framework cannot import your stores because that would create a circular dependency.
+
+### The Solution: `FrameworkProvider`
+Your App pushes its state *down* into the Framework via the `FrameworkProvider`.
+
+```mermaid
+graph TD
+    A[App Store (Zustand)] -->|Passes State| B(FrameworkProvider)
+    B -->|Provides Context| C{Framework Tools}
+    C --> D[usePermission]
+    C --> E[BaseApiClient]
+    C --> F[Router Guards]
+```
+
+This achieves **Minimalist DX**: simpler hooks that "just work" without arguments.
+
+## 5. Logical Boundaries
 -   **Framework**: Generic tools (auth, storage, multi-tenancy logic, permissions).
 -   **Apps**: UI components, specific business logic, and API endpoints.
 -   **Shared**: Constants and layouts that items might share across apps but are not "framework" tools (e.g., a common footer).

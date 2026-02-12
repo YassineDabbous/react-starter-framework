@@ -11,6 +11,7 @@ Manage granular access control with fallback support and role-based checks.
 import { usePermission, Can } from "@/framework";
 
 function MyComponent() {
+  // Zero-Config: Automatically uses user/permissions from FrameworkProvider
   const { can, is } = usePermission();
 
   // 1. Programmatic check
@@ -18,6 +19,7 @@ function MyComponent() {
   if (is('admin')) { /* ... */ }
 
   // 2. Declarative check (Wrapper)
+  // Also uses context automatically!
   return (
     <Can perform="dashboard.read" fallback={<p>No Access</p>}>
       <SecretData />
@@ -54,6 +56,8 @@ setToken("my-secure-token", 3600); // Optional 1 hour TTL
 Detect and react to the current layout direction.
 
 ```tsx
+```tsx
+// Zero-Config: Inherits 'settings.direction' from FrameworkProvider
 const { direction, isRtl, isLtr } = useDirection();
 
 return <div className={isRtl ? 'pr-4' : 'pl-4'}>Content</div>;
