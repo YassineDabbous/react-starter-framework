@@ -27,3 +27,24 @@ export function initFramework(newSettings: Partial<FrameworkSettings>) {
 export function getFrameworkSettings() {
 	return settings;
 }
+
+export function validateFrameworkConfig() {
+	const errors: string[] = [];
+	const { appRegistry, baseApi, defaultLocale } = settings;
+
+	if (!appRegistry || appRegistry.length === 0) {
+		errors.push("Framework configuration error: 'appRegistry' must be a non-empty array.");
+	}
+
+	if (!baseApi) {
+		errors.push("Framework configuration error: 'baseApi' is required.");
+	}
+
+	if (!defaultLocale) {
+		errors.push("Framework configuration error: 'defaultLocale' is required.");
+	}
+
+	if (errors.length > 0) {
+		throw new Error(errors.join("\n"));
+	}
+}
