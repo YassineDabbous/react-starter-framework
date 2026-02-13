@@ -69,20 +69,50 @@ return <div className={isRtl ? 'pr-4' : 'pl-4'}>Content</div>;
 
 ---
 
-## 4. `EventBus` (Cross-App Sync)
+## 4. Performance Monitoring
+Tools to debug and optimize application performance.
+
+### `usePerformance` (Web Vitals)
+Automatically reports Core Web Vitals (LCP, CLS, INP, etc.) to the console or a custom analytics handler.
+
+```tsx
+// in src/main.tsx or specific component
+usePerformance((metric) => {
+  console.log(metric); // { name: 'LCP', value: 2500, ... }
+  // sendToAnalytics(metric);
+});
+```
+
+### `useRenderCount` (Render Tracker)
+Logs how many times a component re-renders. Great for finding optimization candidates.
+
+```tsx
+function ExpensiveGrid() {
+  useRenderCount("ExpensiveGrid"); 
+  // Logs: [RenderCount] ExpensiveGrid: 1, 2, 3...
+  return <div />;
+}
+```
+
+---
+
+## 5. `EventBus` (Cross-App Sync)
 A lightweight, type-safe emitter for decoupled communication.
 
 ```tsx
-import { eventBus } from "@/framework/utils/eventBus";
+ import { eventBus } from "@/framework/utils/eventBus";
 
-// Subscribe
-const unsubscribe = eventBus.on("theme:change", (newTheme) => {
-  console.log("Theme changed to:", newTheme);
-});
+ // 1. Subscribe (Type-safe!)
+ const unsubscribe = eventBus.on("theme:changed", ({ theme }) => {
+   console.log("Theme changed to:", theme);
+ });
 
-// Emit
-eventBus.emit("refresh:data", { force: true });
-```
+ // 2. Emit (Type-checked payloads!)
+ eventBus.emit("theme:changed", { theme: "dark" });
+ 
+ // Errors if payload doesn't match the event type:
+ // eventBus.emit("theme:changed", { theme: 123 }); // Error!
+ ```
 
 ---
 

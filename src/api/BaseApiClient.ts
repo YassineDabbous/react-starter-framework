@@ -66,11 +66,19 @@ export interface ApiClientConfig {
 	onAuthError?: OnAuthError;
 }
 
+/**
+ * A configurable HTTP client wrapper around Axios.
+ * Supports dependency injection for token management and error handling.
+ */
 class APIClient {
 	private axiosInstance: AxiosInstance;
 	private tokenProvider: TokenProvider;
 	private onAuthError: OnAuthError;
 
+	/**
+	 * Creates an instance of APIClient.
+	 * @param config - Configuration options.
+	 */
 	constructor(config: ApiClientConfig = {}) {
 		this.tokenProvider = config.tokenProvider || (() => null);
 		this.onAuthError = config.onAuthError || (() => { });
@@ -157,26 +165,62 @@ class APIClient {
 		this.onAuthError = handler;
 	}
 
+	/**
+	 * Performs a GET request.
+	 * @template T - The expected response type
+	 * @param config - Axios request configuration
+	 * @returns Promise resolving to the response data
+	 */
 	get<T = any>(config: AxiosRequestConfig): Promise<T> {
 		return this.request({ ...config, method: "GET" });
 	}
 
+	/**
+	 * Performs a POST request.
+	 * @template T - The expected response type
+	 * @param config - Axios request configuration
+	 * @returns Promise resolving to the response data
+	 */
 	post<T = any>(config: AxiosRequestConfig): Promise<T> {
 		return this.request({ ...config, method: "POST" });
 	}
 
+	/**
+	 * Performs a PUT request.
+	 * @template T - The expected response type
+	 * @param config - Axios request configuration
+	 * @returns Promise resolving to the response data
+	 */
 	put<T = any>(config: AxiosRequestConfig): Promise<T> {
 		return this.request({ ...config, method: "PUT" });
 	}
 
+	/**
+	 * Performs a PATCH request.
+	 * @template T - The expected response type
+	 * @param config - Axios request configuration
+	 * @returns Promise resolving to the response data
+	 */
 	patch<T = any>(config: AxiosRequestConfig): Promise<T> {
 		return this.request({ ...config, method: "PATCH" });
 	}
 
+	/**
+	 * Performs a DELETE request.
+	 * @template T - The expected response type
+	 * @param config - Axios request configuration
+	 * @returns Promise resolving to the response data
+	 */
 	delete<T = any>(config: AxiosRequestConfig): Promise<T> {
 		return this.request({ ...config, method: "DELETE" });
 	}
 
+	/**
+	 * Performs a generic network request.
+	 * @template T - The expected response type
+	 * @param config - Axios request configuration
+	 * @returns Promise resolving to the response data
+	 */
 	request<T = any>(config: AxiosRequestConfig): Promise<T> {
 		return new Promise((resolve, reject) => {
 			this.axiosInstance

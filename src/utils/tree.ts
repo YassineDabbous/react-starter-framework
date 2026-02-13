@@ -1,9 +1,12 @@
 import { chain } from "ramda";
 
 /**
- * Flatten an array containing a tree structure
- * @param {T[]} trees - An array containing a tree structure
- * @returns {T[]} - Flattened array
+ * Flattens a recursive tree structure into a single-level array.
+ * Uses strict ordering: Parent -> Children (recursive).
+ *
+ * @template T - The node type, must include an optional `children` array.
+ * @param {T[]} trees - The input array of tree nodes.
+ * @returns {T[]} - A new flat array containing all nodes.
  */
 export function flattenTrees<T extends { children?: T[] }>(trees: T[] = []): T[] {
 	return chain((node) => {

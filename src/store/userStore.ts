@@ -5,6 +5,10 @@ import { StorageEnum } from "../types/enum";
 import type { BaseUserInfo, UserToken } from "../types/entity";
 import { createZustandStorage } from "../utils/storage";
 
+/**
+ * Represents the state and actions of the User Store.
+ * @template T - The specific user info type extending BaseUserInfo.
+ */
 export type UserStoreState<T extends BaseUserInfo> = {
 	userInfo: T | null;
 	userToken: UserToken | null;
@@ -17,6 +21,14 @@ export type UserStoreState<T extends BaseUserInfo> = {
 
 /**
  * Factory to create a user store for a specific app.
+ * Uses Zustand with persistence to local storage.
+ *
+ * @template T - The specific user info type for the application.
+ * @returns A Zustand store hook.
+ *
+ * @example
+ * const useUserStore = createUserStore<MyUserType>();
+ * const { userInfo } = useUserStore();
  */
 export const createUserStore = <T extends BaseUserInfo>() => {
 	return create<UserStoreState<T>>()(

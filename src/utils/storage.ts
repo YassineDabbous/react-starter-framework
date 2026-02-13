@@ -39,6 +39,14 @@ const getNamespacedKey = (key: string | StorageEnum): string => {
 	return `${context.id}_${key}`;
 };
 
+/**
+ * Retrieves a value from local storage.
+ * Handles namespacing and TTL (Time-To-Live).
+ *
+ * @template T - The expected type of the stored value
+ * @param key - The storage key (enum or string)
+ * @returns {T | null} The stored value, or null if missing/expired/invalid
+ */
 export const getItem = <T>(key: StorageEnum | string): T | null => {
 	try {
 		const namespacedKey = getNamespacedKey(key);
@@ -60,13 +68,25 @@ export const getItem = <T>(key: StorageEnum | string): T | null => {
 	}
 };
 
+/**
+ * Retrieves a raw string value from local storage.
+ * Useful for legacy data or simple strings where JSON parsing is not needed.
+ *
+ * @param key - The storage key
+ * @returns {string | null} The raw string value
+ */
 export const getStringItem = (key: StorageEnum | string): string | null => {
 	const namespacedKey = getNamespacedKey(key);
 	return localStorage.getItem(namespacedKey);
 };
 
 /**
- * Set item with optional TTL (in seconds)
+ * Saves a value to local storage with optional expiration.
+ *
+ * @template T - The type of the value to store
+ * @param key - The storage key
+ * @param value - The value to store
+ * @param ttl - UUID Time-To-Live in seconds. If provided, the item enables after this duration.
  */
 export const setItem = <T>(key: StorageEnum | string, value: T, ttl?: number): void => {
 	const namespacedKey = getNamespacedKey(key);
@@ -77,6 +97,11 @@ export const setItem = <T>(key: StorageEnum | string, value: T, ttl?: number): v
 	localStorage.setItem(namespacedKey, JSON.stringify(storageValue));
 };
 
+/**
+ * Removes an item from local storage.
+ *
+ * @param key - The storage key to remove
+ */
 export const removeItem = (key: StorageEnum | string): void => {
 	const namespacedKey = getNamespacedKey(key);
 	localStorage.removeItem(namespacedKey);

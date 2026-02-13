@@ -6,37 +6,34 @@ The framework provides a standardized **BaseApiClient** built on top of **Axios*
 Extend the `BaseApiClient` to create specific service clients:
 
 ```typescript
-import { BaseApiClient } from "@/framework";
+ import { createApiClient, BaseApiClient } from "@/framework";
 
-class UserClient extends BaseApiClient {
-  async getProfile() {
-    return this.get("/user/profile");
-  }
-}
+ class UserClient extends BaseApiClient {
+   async getProfile() {
+     return this.get("/user/profile");
+   }
+ }
 
-export const userClient = new UserClient();
-```
+ // Create specialized client
+ export const userClient = new UserClient(createApiClient({
+   baseURL: "/api/v2" 
+ }));
+ ```
 
 ## 2. Token Injection
 The client automatically retrieves the `accessToken` from the **FrameworkContext**.
 
 ### Automatic Configuration
-When you wrap your app with `FrameworkProvider`, it automatically syncs the token:
-
-```tsx
-<FrameworkProvider token={myToken} ...>
-  <App />
-</FrameworkProvider>
-```
-
-The `BaseApiClient` listens to this context and injects the `Authorization` header for every request:
+When you initialize the app using `FrameworkProvider`, it handles token injection automatically via the `createReactQueryClient` factory or `APIClient` configuration.
 
 ```typescript
-// Internal logic (handled automatically)
-config.headers.Authorization = `Bearer ${token}`;
+const client = createApiClient({
+  tokenProvider: () => localStorage.getItem('token'),
+  onAuthError: () => window.location.href = '/login'
+});
 ```
 
-**Note**: You do not need to manually configure the token provider unless you are using the API client outside of the React tree.
+**Note**: The framework's default setup in `src/main.tsx` configures this for you globally.
 
 ## 3. Error Handling
 The client includes built-in interceptors to handle common scenarios:

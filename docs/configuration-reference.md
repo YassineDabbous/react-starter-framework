@@ -10,11 +10,11 @@ Called in your shell's entry point (`main.tsx`).
 
 | Property | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `appRegistry` | `AppRegistry` | `[]` | List of all applications to be managed by the framework. |
+| `appRegistry` | `AppRegistry` | **Required** | List of all applications to be managed by the framework. |
 | `storageName` | `string` | `"app"` | Prefix for LocalStorage keys to avoid collisions with other apps on the same domain. |
-| `baseApi` | `string` | `""` | The root URL for the `BaseApiClient`. |
+| `baseApi` | `string` | **Required** | The root URL for the `BaseApiClient`. |
 | `homepage` | `string` | `"/"` | The path users are redirected to after login. |
-| `defaultLocale` | `string` | `"en_US"` | Fallback locale if detection fails. |
+| `defaultLocale` | `string` | **Required** | Fallback locale if detection fails. |
 | `defaultAppId` | `string` | `undefined` | The ID of the app to load if no host or path match is found. |
 | `superAdminRole` | `string` | `"superadmin"` | The role ID that bypasses all permission checks. |
 | `theme` | `AppThemeConfig` | `undefined` | Global theme tokens (can be overridden by specific apps). |

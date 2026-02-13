@@ -5,8 +5,18 @@ import { useFrameworkContext } from "../context/FrameworkContext";
 export type Direction = "ltr" | "rtl";
 
 /**
- * A framework-level hook to detect the current layout direction.
- * This works independently of any UI library.
+ * A framework-level hook to detect the current layout direction (LTR/RTL).
+ * This works independently of any UI library, using the framework context and i18n settings.
+ *
+ * @param settingsDirection - A forced direction override.
+ * @returns {Object} Direction helpers
+ * @property {Direction} direction - "ltr" or "rtl"
+ * @property {boolean} isRtl - True if direction is "rtl"
+ * @property {boolean} isLtr - True if direction is "ltr"
+ *
+ * @example
+ * const { isRtl } = useDirection();
+ * <div dir={isRtl ? "rtl" : "ltr"}>...</div>
  */
 export function useDirection(settingsDirection?: Direction) {
 	const { i18n } = useTranslation();

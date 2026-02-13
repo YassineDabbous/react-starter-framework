@@ -52,6 +52,22 @@ The framework supports two main layout slots:
 
 The Router ensures that only authorized users see the `dashboard` layout.
 
+## 5. Error Handling
+The framework automatically wraps routes with a **RouteErrorBoundary**.
+
+- **Chunk Load Errors**: Automatically attempts to reload the page if a lazy-loaded chunk fails (e.g., after a new deployment).
+- **Runtime Errors**: Catches component crashes and displays a user-friendly error UI.
+- **Customization**: You can provide a custom `errorBoundary` component in the router config.
+
+```tsx
+<Router config={{
+  ...config,
+  components: {
+    errorBoundary: <MyCustomErrorPage />
+  }
+}} />
+```
+
 ---
 
 ## Next Steps
