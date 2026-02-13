@@ -21,6 +21,7 @@ export * from "./router/components/Can";
 
 // API
 export { default as BaseApiClient, createApiClient, type ApiClientConfig } from "./api/BaseApiClient";
+export { createReactQueryClient } from "./api/query-client";
 
 // Utils
 export * from "./utils/storage";
