@@ -28,6 +28,8 @@ export * from "./utils/storage";
 export * from "./utils/eventBus";
 export * from "./utils/tree";
 
+export type { FrameworkEventMap } from "./types/events";
+
 // Types
 export * from "./types/app";
 export * from "./types/entity";

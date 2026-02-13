@@ -1,18 +1,23 @@
 import { useEffect } from "react";
+import type { FrameworkEventMap } from "../types/events";
 
-type Handler<T = any> = (data: T) => void;
+// Allow augmenting the event map
+export interface EventMap extends FrameworkEventMap { }
+
+type EventKey = keyof EventMap;
+type EventHandler<K extends EventKey> = (data: EventMap[K]) => void;
 
 /**
  * A lightweight, type-safe event bus for the framework.
  * Allows decoupled communication between apps or components.
  */
 class EventBus {
-	private handlers: Map<string, Set<Handler>> = new Map();
+	private handlers: Map<EventKey, Set<EventHandler<any>>> = new Map();
 
 	/**
 	 * Subscribe to an event
 	 */
-	on<T = any>(event: string, handler: Handler<T>): () => void {
+	on<K extends EventKey>(event: K, handler: EventHandler<K>): () => void {
 		if (!this.handlers.has(event)) {
 			this.handlers.set(event, new Set());
 		}
@@ -25,7 +30,7 @@ class EventBus {
 	/**
 	 * Unsubscribe from an event
 	 */
-	off<T = any>(event: string, handler: Handler<T>): void {
+	off<K extends EventKey>(event: K, handler: EventHandler<K>): void {
 		const set = this.handlers.get(event);
 		if (set) {
 			set.delete(handler);
@@ -38,7 +43,7 @@ class EventBus {
 	/**
 	 * Emit an event
 	 */
-	emit<T = any>(event: string, data?: T): void {
+	emit<K extends EventKey>(event: K, data: EventMap[K]): void {
 		const set = this.handlers.get(event);
 		if (set) {
 			for (const handler of set) {
@@ -54,7 +59,7 @@ class EventBus {
 	/**
 	 * Clear all handlers for an event
 	 */
-	clear(event: string): void {
+	clear(event: EventKey): void {
 		this.handlers.delete(event);
 	}
 }
@@ -64,7 +69,7 @@ export const eventBus = new EventBus();
 /**
  * React hook to safely use the event bus within components
  */
-export function useEvent<T = any>(event: string, handler: Handler<T>) {
+export function useEvent<K extends EventKey>(event: K, handler: EventHandler<K>) {
 	useEffect(() => {
 		return eventBus.on(event, handler);
 	}, [event, handler]);
