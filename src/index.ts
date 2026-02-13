@@ -8,6 +8,8 @@ export * from "./hooks/useDirection";
 export * from "./locales/use-locale";
 export * from "./hooks/usePermission";
 export * from "./hooks/useStorage";
+export * from "./hooks/use-performance";
+export * from "./hooks/use-render-count";
 export * from "./theme";
 
 // Store
